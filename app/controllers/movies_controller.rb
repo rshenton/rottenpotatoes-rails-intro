@@ -11,16 +11,14 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @all_ratings = Hash[Movie.all_ratings.map {|k| [k, true]}]
+    @sort = params[:sort] || session[:sort]
+    @checked_ratings = params[:ratings] || session[:ratings] || Hash[Movie.all_ratings.map {|k| [k, true]}]
+    @all_ratings = Hash[Movie.all_ratings.map {|k| [k, @checked_ratings.key?(k)]}]
     
-    if params[:sort]
-      @movies = Movie.order params[:sort]
-    elsif params[:ratings]
-      @movies = Movie.where :rating => params[:ratings].keys
-      @all_ratings = Hash[Movie.all_ratings.map {|k| [k, params[:ratings].key?(k)]}]
-    else
-      @movies = Movie.all
-    end
+    session[:sort] = @sort
+    session[:ratings] = @checked_ratings
+    
+    @movies = Movie.where(:rating => @checked_ratings.keys).order @sort
   end
 
   def new

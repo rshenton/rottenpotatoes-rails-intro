@@ -11,10 +11,10 @@
 %table#movies
   %thead
     %tr
-      %th#title_header{:class => ("hilite" if params[:sort] == 'title')}
+      %th#title_header{:class => ("hilite" if @sort == 'title')}
         =link_to "Movie Title", :sort => :title
       %th Rating
-      %th#release_date_header{:class => ("hilite" if params[:sort] == 'release_date')}
+      %th#release_date_header{:class => ("hilite" if @sort == 'release_date')}
         =link_to "Release Date", :sort => :release_date
       %th More Info
   %tbody
