@@ -15,10 +15,15 @@ class MoviesController < ApplicationController
     @checked_ratings = params[:ratings] || session[:ratings] || Hash[Movie.all_ratings.map {|k| [k, true]}]
     @all_ratings = Hash[Movie.all_ratings.map {|k| [k, @checked_ratings.key?(k)]}]
     
-    session[:sort] = @sort
-    session[:ratings] = @checked_ratings
-    
     @movies = Movie.where(:rating => @checked_ratings.keys).order @sort
+    
+    if session[:sort] != @sort || session[:ratings] != @checked_ratings
+      session[:sort] = @sort
+      session[:ratings] = @checked_ratings
+      
+      flash.keep
+      redirect_to movies_path :ratings => @checked_ratings, :sort => @sort
+    end
   end
 
   def new
